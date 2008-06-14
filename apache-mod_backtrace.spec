@@ -47,6 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 %service -q httpd restart
+touch /var/log/httpd/backtrace_log && chown root:http /var/log/httpd/backtrace_log && chmod 620 /var/log/httpd/backtrace_log
 
 %postun
 if [ "$1" = "0" ]; then
