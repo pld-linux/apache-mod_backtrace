@@ -5,7 +5,7 @@ Name:		apache-mod_%{mod_name}
 Version:	0.1
 Release:	0.20040317.1
 License:	Apache v2.0
-Group:		Networking/Daemons
+Group:		Networking/Daemons/HTTP
 Source0:	http://people.apache.org/~trawick/mod_backtrace.c
 # Source0-md5:	cd5361da31b3c1401e29ccb6e5220f6b
 BuildRequires:	%{apxs}
