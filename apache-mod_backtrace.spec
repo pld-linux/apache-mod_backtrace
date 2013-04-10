@@ -4,7 +4,7 @@ Summary:	Apache module: collects backtraces on crashes
 Summary(pl.UTF-8):	Moduł Apache:	zbiera informacje o awariach
 Name:		apache-mod_%{mod_name}
 Version:	2.00
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	http://emptyhammock.com/downloads/wku_bt-%{version}.zip
