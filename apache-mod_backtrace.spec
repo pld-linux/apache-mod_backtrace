@@ -3,15 +3,16 @@
 Summary:	Apache module: collects backtraces on crashes
 Summary(pl.UTF-8):	Moduł Apache:	zbiera informacje o awariach
 Name:		apache-mod_%{mod_name}
-Version:	2.00
-Release:	3
+Version:	2.01
+Release:	1
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
 Source0:	http://emptyhammock.com/downloads/wku_bt-%{version}.zip
-# Source0-md5:	acc3f8497b0aabaad5c24d8d34d53ff1
+# Source0-md5:	32bbe148f6cb2b8714166388f94d9129
 URL:		http://emptyhammock.com/projects/httpd/diag/
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.0
+BuildRequires:	libunwind-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache-mod_whatkilledus >= %{version}
 Requires:	apache(modules-api) = %apache_modules_api
@@ -35,10 +36,12 @@ serwera apache ulegnie zniszczeniu.
 
 %build
 %{apxs} -c mod_%{mod_name}.c diag.c \
+	-DDIAG_HAVE_LIBUNWIND_BACKTRACE=1 \
 %if "%{__lib}" == "lib64"
-	   -DDIAG_BITS_64=1 \
+	-DDIAG_BITS_64=1 \
 %endif
-	   -o mod_%{mod_name}.la
+	-lunwind \
+	-o mod_%{mod_name}.la
 
 %install
 rm -rf $RPM_BUILD_ROOT
