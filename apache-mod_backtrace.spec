@@ -4,17 +4,16 @@ Summary:	Apache module: collects backtraces on crashes
 Summary(pl.UTF-8):	Moduł Apache:	zbiera informacje o awariach
 Name:		apache-mod_%{mod_name}
 Version:	2.01
-Release:	2
+Release:	3
 License:	Apache v2.0
 Group:		Networking/Daemons/HTTP
-Source0:	http://emptyhammock.com/downloads/wku_bt-%{version}.zip
+Source0:	https://emptyhammock.com/media/downloads/wku_bt-%{version}.zip
 # Source0-md5:	32bbe148f6cb2b8714166388f94d9129
-URL:		http://emptyhammock.com/projects/httpd/diag/
+URL:		https://emptyhammock.com/projects/httpd/diag/
 BuildRequires:	%{apxs}
 BuildRequires:	apache-devel >= 2.0
 BuildRequires:	libunwind-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
-Requires:	apache-mod_whatkilledus >= %{version}
 Requires:	apache(modules-api) = %apache_modules_api
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -35,13 +34,15 @@ serwera apache ulegnie zniszczeniu.
 %setup -q -n wku_bt-%{version}
 
 %build
-%{apxs} -c mod_%{mod_name}.c diag.c \
+# apxs stops parsing options at the first source file, so every flag has to precede them
+%{apxs} -c \
 	-DDIAG_HAVE_LIBUNWIND_BACKTRACE=1 \
 %if "%{__lib}" == "lib64"
 	-DDIAG_BITS_64=1 \
 %endif
 	-lunwind \
-	-o mod_%{mod_name}.la
+	-o mod_%{mod_name}.la \
+	mod_%{mod_name}.c diag.c
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -57,6 +58,7 @@ EOF
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
 %service -q httpd restart
 
 %postun
@@ -69,5 +71,6 @@ sed -i -e 's#^EnableExceptionHook.*##g' -e 's#BacktraceLog.*##g' %{_sysconfdir}/
 
 %files
 %defattr(644,root,root,755)
+%doc CHANGES.txt NOTICE.txt
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*_mod_%{mod_name}.conf
 %attr(755,root,root) %{_pkglibdir}/*.so
